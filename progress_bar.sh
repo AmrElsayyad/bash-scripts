@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Title:         title
-# Description:   description
+# Title:         progress bar
+# Description:   a dummy progress bar
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
-# Date:          yyyy-mm-dd
+# Date:          2022-09-08
 # Version:       1.0.0
 
 # Exit codes
