@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Title:         colorful hello
-# Description:   print hello world with selected color from menu
+# Title:         options
+# Description:   print hello world with color selected from options menu
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-08
 # Version:       1.0.1
