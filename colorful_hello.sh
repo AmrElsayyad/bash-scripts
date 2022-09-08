@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # Title:         colorful hello
-# Description:   print hello world in a colorful way
+# Description:   print hello world with selected color from menu
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-08
-# Version:       1.0.0
+# Version:       1.0.1
 
 # Exit codes
 # ==========
@@ -34,11 +34,69 @@ trap on_ctrl_c SIGINT
 # <<<<<<<<<<<<<<<<<<<<<<<< event handlers <<<<<<<<<<<<<<<<<<<<<<<<
 
 
+# >>>>>>>>>>>>>>>>>>>>>>>> functions >>>>>>>>>>>>>>>>>>>>>>>>
+
+# Usage: options=("one" "two" "three"); inputChoice "Choose:" "default selection" "${options[@]}";
+function inputChoice() {
+    echo "${1}"; shift
+    echo "$(tput dim)""- Change option: [up/down], Select: [ENTER]" "$(tput sgr0)"
+    local selected="${1}"; shift
+
+    ESC=$(echo -e "\033")
+    cursor_blink_on()  { tput cnorm; }
+    cursor_blink_off() { tput civis; }
+    cursor_to()        { tput cup $(($1-1)); }
+    print_option()     { echo "$(tput sgr0)" "$1" "$(tput sgr0)"; }
+    print_selected()   { echo "$(tput rev)" "$1" "$(tput sgr0)"; }
+    get_cursor_row()   { IFS=';' read -rsdR -p $'\E[6n' ROW COL; echo "${ROW#*[}"; }
+    key_input()        { read -rs -n3 key 2>/dev/null >&2; [[ $key = ${ESC}[A ]] && echo up; [[ $key = ${ESC}[B ]] && echo down; [[ $key = "" ]] && echo enter; }
+
+    for opt; do echo; done
+
+    local lastrow
+    lastrow=$(get_cursor_row)
+    local startrow=$((lastrow - $#))
+    trap "cursor_blink_on; echo; echo; exit" 2
+    cursor_blink_off
+
+    : selected:=0
+
+    while true; do
+        local idx=0
+        for opt; do
+            cursor_to $((startrow + idx))
+            if [ ${idx} -eq "${selected}" ]; then
+                print_selected "${opt}"
+            else
+                print_option "${opt}"
+            fi
+            ((idx++))
+        done
+
+        case $(key_input) in
+            enter) break;;
+            up)    ((selected--)); [ "${selected}" -lt 0 ] && selected=$(($# - 1));;
+            down)  ((selected++)); [ "${selected}" -ge $# ] && selected=0;;
+        esac
+    done
+
+    cursor_to "${lastrow}"
+    cursor_blink_on
+    echo
+
+    return "${selected}"
+}
+
+# <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
+
+
 # >>>>>>>>>>>>>>>>>>>>>>>> code starts here >>>>>>>>>>>>>>>>>>>>>>>>
 
-# print hello in different colors
-for color in {0..7}; do
-    echo "$(tput setaf $color)""Hello World!""$(tput sgr0)"
-done
+# Usage: options=("one" "two" "three"); inputChoice "Choose:" "default selection" "${options[@]}";
+options=("Black" "Red" "Green" "Yellow" "Blue" "Magenta" "Cyan" "White")
+inputChoice "Choose color:" 0 "${options[@]}"
+color=$?
+
+echo "$(tput setaf $color)""Hello World!""$(tput sgr0)"
 
 # <<<<<<<<<<<<<<<<<<<<<<<< code starts here <<<<<<<<<<<<<<<<<<<<<<<<
