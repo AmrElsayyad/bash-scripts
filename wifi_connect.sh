@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# Title:         wifi connect
+# Description:   connect to the strongest wifi signal
+# Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
+# Date:          2022-09-08
+# Version:       1.0.0
+
+# Exit codes
+# ==========
+# 0   no error
+# 1   script interrupted
+# 2   failed to retrieve SSID
+# 3   failed to connect
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>> handler functions >>>>>>>>>>>>>>>>>>>>>>>>
+
+# CTRL+C event handler
+function on_ctrl_c() {
+    echo # Set cursor to the next line of '^C'
+    tput cnorm # show cursor. You need this if animation is used.
+    # i.e. clean-up code here
+    echo "terminated by signal interrupt" 1>&2
+    exit 1 # Don't remove. Use a number (1-255) for error code.
+}
+
+# <<<<<<<<<<<<<<<<<<<<<<<< handler functions <<<<<<<<<<<<<<<<<<<<<<<<
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>> event handlers >>>>>>>>>>>>>>>>>>>>>>>>
+
+# Register CTRL+C event handler
+trap on_ctrl_c SIGINT
+
+# <<<<<<<<<<<<<<<<<<<<<<<< event handlers <<<<<<<<<<<<<<<<<<<<<<<<
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>> code starts here >>>>>>>>>>>>>>>>>>>>>>>>
+
+# Turn on wifi
+nmcli radio wifi on 2>/dev/null
+
+# Get network SSID
+ssid=$(nmcli -f ssid dev wifi | grep 'Amol' | head -1 | xargs 2>/dev/null) # Put your regex between the quotes
+
+# Check for failure
+if [[ $? != 0 ]]; then
+    echo "Failed to retrieve network SSID."
+    exit 2
+fi
+
+# Connect to network
+connected=$(nmcli c up $ssid 2>/dev/null)
+
+# Check for failure
+if [[ $? != 0 ]]; then
+    echo "Failed to connect to $ssid."
+    exit 3
+fi
+
+echo "Connected to $ssid."
+
+# <<<<<<<<<<<<<<<<<<<<<<<< code starts here <<<<<<<<<<<<<<<<<<<<<<<<
