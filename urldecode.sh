@@ -4,14 +4,15 @@
 # Description:   decodes given url
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-08
-# Version:       1.0.0
+# Version:       1.0.1
 
 # Exit codes
 # ==========
 # 0   no error
 # 1   script interrupted
-# 2   no arguments
-# 3   too many arguments
+# 2   missing argument
+# 3   invalid argument
+# 4   file does not exist
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> variables >>>>>>>>>>>>>>>>>>>>>>>>
@@ -64,22 +65,43 @@ function urldecode () {
 
 # >>>>>>>>>>>>>>>>>>>>>>>> argument parsing >>>>>>>>>>>>>>>>>>>>>>>>
 
+while (( $# > 0 )); do
+    case "${1}" in
+        -f|--file)
+        numOfArgs=1 # number of switch arguments
+        if (( $# < numOfArgs + 1 )); then
+            echo "Error: missing filepath." 1>&2
+            exit 2
+        else
+            if [ -f "${2}" ]; then
+                urls=$(cat ${2})
+            else
+                echo "Error: file does not exist."
+                exit 4
+            fi
+            shift $((numOfArgs + 1)) # shift 'numOfArgs + 1' to bypass switch and its value
+        fi
+        ;;
+        *) # unknown flag/switch
+        echo "Error: invalid argument." 1>&2
+        exit 3
+    esac
+done
 
 # <<<<<<<<<<<<<<<<<<<<<<<< argument parsing <<<<<<<<<<<<<<<<<<<<<<<<
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
 
-if (( $# < 1 )); then
-    echo "Error: no URL was given." 1>&2
-    exit 2
-elif (( $# > 1 )); then
-    echo "Error: too many arguments were given." 1>&2
-    exit 3
-else
-    # Usage: urlencode url
-    urldecode ${1}
-    echo
+# if URL doesn't exist then read from STDIN
+if [ -z ${urls+x} ]; then
+    read -rd '\n' urls
 fi
+
+# decode given URLs
+for url in ${urls[@]}; do
+    urldecode "${url}"
+    echo
+done
 
 # <<<<<<<<<<<<<<<<<<<<<<<< rest of code <<<<<<<<<<<<<<<<<<<<<<<<
