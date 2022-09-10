@@ -10,12 +10,8 @@
 # ==========
 # 0   no error
 # 1   script interrupted
-# 2   error description
-
-
-# >>>>>>>>>>>>>>>>>>>>>>>> variables >>>>>>>>>>>>>>>>>>>>>>>>
-
-# <<<<<<<<<<<<<<<<<<<<<<<< variables <<<<<<<<<<<<<<<<<<<<<<<<
+# 2   missing argument
+# 3   invalid argument
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> handler functions >>>>>>>>>>>>>>>>>>>>>>>>
@@ -69,36 +65,6 @@ function progressBar() {
 }
 
 # <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
-
-
-# >>>>>>>>>>>>>>>>>>>>>>>> argument parsing >>>>>>>>>>>>>>>>>>>>>>>>
-
-POSITIONAL=()
-while (( $# > 0 )); do
-    case "${1}" in
-        -f|--flag)
-        echo flag: "${1}"
-        shift # shift once since flags have no values
-        ;;
-        -s|--switch)
-        numOfArgs=1 # number of switch arguments
-        if (( $# < numOfArgs + 1 )); then
-            shift $#
-        else
-            echo "switch: ${1} with value: ${2}"
-            shift $((numOfArgs + 1)) # shift 'numOfArgs + 1' to bypass switch and its value
-        fi
-        ;;
-        *) # unknown flag/switch
-        POSITIONAL+=("${1}")
-        shift
-        ;;
-    esac
-done
-
-set -- "${POSITIONAL[@]}" # restore positional params
-
-# <<<<<<<<<<<<<<<<<<<<<<<< argument parsing <<<<<<<<<<<<<<<<<<<<<<<<
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
