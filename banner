@@ -3,15 +3,15 @@
 # Title:         banner
 # Description:   display a banner
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
-# Date:          2022-09-08
-# Version:       1.0.0
+# Date:          2022-09-10
+# Version:       1.0.1
 
 # Exit codes
 # ==========
 # 0   no error
 # 1   script interrupted
 # 2   missing argument
-# 3   unknown argument
+# 3   invalid argument
 # 4   invalid color
 
 
@@ -58,9 +58,7 @@ function bannerColor() {
         ;;
         white) color=7
         ;;
-        *)
-        echo "Error: color is not valid." 1>&2
-        exit 4
+        *) echo "Error: color is not valid." 1>&2; exit 4
         ;;
     esac
 
@@ -92,9 +90,15 @@ POSITIONAL=()
 while (( $# > 0 )); do
     case "${1}" in
         -c|--color)
+        # check if argument is after a positional argument
+        if (( ${#POSITIONAL[@]} > 0 )); then
+            echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+            exit 3
+        fi
+        # get switch arguments
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
-            echo "missing argument for '${1}' option" >&2
+            echo "missing argument for '${1}' option" 1>&2
             exit 2
         else
             color=${2}
@@ -102,9 +106,15 @@ while (( $# > 0 )); do
         fi
         ;;
         -d|--decorator)
+        # check if argument is after a positional argument
+        if (( ${#POSITIONAL[@]} > 0 )); then
+            echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+            exit 3
+        fi
+        # get switch arguments
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
-            echo "missing argument for '${1}' option" >&2
+            echo "missing argument for '${1}' option" 1>&2
             exit 2
         else
             decorator=${2}
@@ -112,9 +122,15 @@ while (( $# > 0 )); do
         fi
         ;;
         -m|--message)
+        # check if argument is after a positional argument
+        if (( ${#POSITIONAL[@]} > 0 )); then
+            echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+            exit 3
+        fi
+        # get switch arguments
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
-            echo "missing argument for '${1}' option" >&2
+            echo "missing argument for '${1}' option" 1>&2
             exit 2
         else
             message=${2}
@@ -123,7 +139,7 @@ while (( $# > 0 )); do
         ;;
         *) # unknown flag/switch
         if [[ "${1}" =~ ^- ]]; then
-            echo "argument ${1} not understood."
+            echo "argument ${1} not understood." 1>&2
             exit 3
         else
             POSITIONAL+=("${1}")
@@ -138,22 +154,29 @@ set -- "${POSITIONAL[@]}" # restore positional params
 # <<<<<<<<<<<<<<<<<<<<<<<< argument parsing <<<<<<<<<<<<<<<<<<<<<<<<
 
 
-# >>>>>>>>>>>>>>>>>>>>>>>> code starts here >>>>>>>>>>>>>>>>>>>>>>>>
+# >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
 
-# show banner
+# check for positional arguments
 if (( ${#POSITIONAL[@]} > 0 )); then
     if [ "${message}" ]; then
-        echo "argument '${POSITIONAL[@]}' not understood."
+        # if there are both a positional arg and a message arg
+        echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+        exit 3
+    elif (( ${#POSITIONAL[@]} > 1 )); then
+        # if more than 1 positional arg
+        echo "argument '${POSITIONAL[@]:1}' not understood." 1>&2
         exit 3
     else
-        for message in ${POSITIONAL[@]}; do
-            bannerColor "${message}" "${color}" "${decorator}"
-        done
+        # if the positional arg is the message
+        message=${POSITIONAL[0]}
     fi
-elif [ "${message}" ]; then
+fi
+
+# check for existence of message
+if [ "${message}" ]; then
     bannerColor "${message}" "${color}" "${decorator}"
 else    
     echo "No message to display!" 1>&2
 fi
 
-# <<<<<<<<<<<<<<<<<<<<<<<< code starts here <<<<<<<<<<<<<<<<<<<<<<<<
+# <<<<<<<<<<<<<<<<<<<<<<<< rest of code <<<<<<<<<<<<<<<<<<<<<<<<

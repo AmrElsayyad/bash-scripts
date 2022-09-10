@@ -3,19 +3,15 @@
 # Title:         pacman
 # Description:   print a string then pacman eats it
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
-# Date:          2022-09-08
-# Version:       1.0.0
+# Date:          2022-09-10
+# Version:       1.0.1
 
 # Exit codes
 # ==========
 # 0   no error
 # 1   script interrupted
-# 2   error description
-
-
-# >>>>>>>>>>>>>>>>>>>>>>>> variables >>>>>>>>>>>>>>>>>>>>>>>>
-
-# <<<<<<<<<<<<<<<<<<<<<<<< variables <<<<<<<<<<<<<<<<<<<<<<<<
+# 2   missing argument
+# 3   invalid argument
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> handler functions >>>>>>>>>>>>>>>>>>>>>>>>
@@ -95,6 +91,12 @@ POSITIONAL=()
 while (( $# > 0 )); do
     case "${1}" in
         -i|--interval)
+        # check if argument is after a positional argument
+        if (( ${#POSITIONAL[@]} > 0 )); then
+            echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+            exit 3
+        fi
+        # get switch arguments
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
             echo "missing argument for '${1}' option" >&2
@@ -105,6 +107,12 @@ while (( $# > 0 )); do
         fi
         ;;
         -p|--padding)
+        # check if argument is after a positional argument
+        if (( ${#POSITIONAL[@]} > 0 )); then
+            echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+            exit 3
+        fi
+        # get switch arguments
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
             echo "missing argument for '${1}' option" >&2
@@ -115,6 +123,12 @@ while (( $# > 0 )); do
         fi
         ;;
         -s|--string)
+        # check if argument is after a positional argument
+        if (( ${#POSITIONAL[@]} > 0 )); then
+            echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+            exit 3
+        fi
+        # get switch arguments
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
             echo "missing argument for '${1}' option" >&2
@@ -143,12 +157,23 @@ set -- "${POSITIONAL[@]}" # restore positional params
 
 # >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
 
-if (( ${#POSITIONAL[@]} > 0 )) && [ "${string}" ]; then
-    echo "argument '${POSITIONAL[@]}' not understood."
-    exit 3
-else
-    # Usage: pacMan inputString interval pad
-    pacMan "${POSITIONAL[@]}" ${interval} ${padding}
+# check for positional arguments
+if (( ${#POSITIONAL[@]} > 0 )); then
+    if [ "${string}" ]; then
+        # if there are both a positional arg and a string arg
+        echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+        exit 3
+    elif (( ${#POSITIONAL[@]} > 1 )); then
+        # if more than 1 positional arg
+        echo "argument '${POSITIONAL[@]:1}' not understood." 1>&2
+        exit 3
+    else
+        # if the positional arg is the string
+        string=${POSITIONAL[0]}
+    fi
 fi
+
+# run pacman
+pacMan "${POSITIONAL[@]}" ${interval} ${padding}
 
 # <<<<<<<<<<<<<<<<<<<<<<<< rest of code <<<<<<<<<<<<<<<<<<<<<<<<

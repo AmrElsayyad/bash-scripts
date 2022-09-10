@@ -3,8 +3,8 @@
 # Title:         options
 # Description:   print hello world with color selected from options menu
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
-# Date:          2022-09-08
-# Version:       1.0.1
+# Date:          2022-09-10
+# Version:       1.0.2
 
 # Exit codes
 # ==========
@@ -49,7 +49,8 @@ function inputChoice() {
     print_option()     { echo "$(tput sgr0)" "$1" "$(tput sgr0)"; }
     print_selected()   { echo "$(tput rev)" "$1" "$(tput sgr0)"; }
     get_cursor_row()   { IFS=';' read -rsdR -p $'\E[6n' ROW COL; echo "${ROW#*[}"; }
-    key_input()        { read -rs -n3 key 2>/dev/null >&2; [[ $key = ${ESC}[A ]] && echo up; [[ $key = ${ESC}[B ]] && echo down; [[ $key = "" ]] && echo enter; }
+    key_input()        { read -rs -n3 key 2>/dev/null >&2; [[ $key = ${ESC}[A ]] &&\
+     echo up; [[ $key = ${ESC}[B ]] && echo down; [[ $key = "" ]] && echo enter; }
 
     for opt; do echo; done
 
@@ -90,7 +91,7 @@ function inputChoice() {
 # <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
 
 
-# >>>>>>>>>>>>>>>>>>>>>>>> code starts here >>>>>>>>>>>>>>>>>>>>>>>>
+# >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
 
 # Usage: options=("one" "two" "three"); inputChoice "Choose:" "default selection" "${options[@]}";
 options=("Black" "Red" "Green" "Yellow" "Blue" "Magenta" "Cyan" "White")
@@ -99,4 +100,4 @@ color=$?
 
 echo "$(tput setaf $color)""Hello World!""$(tput sgr0)"
 
-# <<<<<<<<<<<<<<<<<<<<<<<< code starts here <<<<<<<<<<<<<<<<<<<<<<<<
+# <<<<<<<<<<<<<<<<<<<<<<<< rest of code <<<<<<<<<<<<<<<<<<<<<<<<
