@@ -12,6 +12,7 @@
 # 1   script interrupted
 # 2   missing argument
 # 3   unknown argument
+# 4   invalid color
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> handler functions >>>>>>>>>>>>>>>>>>>>>>>>
@@ -56,6 +57,10 @@ function bannerColor() {
         cyan) color=6
         ;;
         white) color=7
+        ;;
+        *)
+        echo "Error: color is not valid." 1>&2
+        exit 4
         ;;
     esac
 
