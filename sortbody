@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Title:         body sort
+# Title:         sortbody
 # Description:   sort body of input, leaving the header as it is.
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-09
