@@ -95,7 +95,7 @@ done
 # >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
 
 # if URL doesn't exist then read from STDIN
-if [ -z ${urls+x} ]; then
+if ! [ "${urls}" ]; then
     read -rd '\n' urls
 fi
 
