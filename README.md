@@ -4,42 +4,53 @@ A repository for simple bash scripts to do simple tasks.
 
 
 ## File Description
-* <strong>banner</strong><br>
-Displays a banner with given message, color and decorator.<br>
-Options:
-  * -c|--color<br>
-  Text color.
-  * -d|--decorator<br>
-  Decorator around message.
-  * -m|--message<br>
-  Message to be displayed.
+
+### - banner
+Displays a banner with given message, color and decorator.
+
+| Options         | Usage                     |
+| --------------- | ------------------------- |
+| -c, --color     | Text color.               |
+| -d, --decorator | Decorator around message. |
+| -m, --message   | Message to be displayed.  |
+
+Example:
 ```bash
 $ banner -d '#' "Hello World!"
 ################
 # Hello World! #
 ################
 ```
-* <strong>factorial</strong><br>
+
+### - factorial
 Get the factorial of a number.
+
+Example:
 ```bash
 $ factorial 3
 6
 ```
-* <strong>greet</strong><br>
-Displays a greeting message for a user.<br>
-Options:
-  * -m|--morning<br>
-  Toggle morning instead of evening.
-  * -n|--name<br>
-  User name.
+
+### - greet
+Displays a greeting message for a user.
+
+| Options         | Usage                               |
+| --------------- | ----------------------------------- |
+| -m, --morning   | Toggle morning instead of evening.  |
+| -n, --name      | User name.                          |
+
+Example:
 ```bash
 $ greet Amr
 Good evening Amr!
 $ greet -m Sayyad
 Good morning Sayyad!
 ```
-* <strong>options</strong><br>
+
+### - options
 Print Hello World with color selected from options menu.
+
+Example:
 ```bash
 $ options
 Choose color:
@@ -55,28 +66,35 @@ Choose color:
 
 Hello World!
 ```
-* <strong>pacman</strong><br>
-Display given string, then pacman eats it letter by letter with given delay.<br>
-Options:
-  * -i|--interval<br>
-  Interval for pacman to wait between eating letters.
-  * -p|--padding<br>
-  Leftover padding after letter was eaten.
-  * -s|--string<br>
-  String to be displayed.
+
+### - pacman
+Display given string, then pacman eats it letter by letter with given delay.
+
+| Options         | Usage                                               |
+| --------------- | --------------------------------------------------- |
+| -i, --interval  | Interval for pacman to wait between eating letters. |
+| -p, --padding   | Leftover padding after letter was eaten.            |
+| -s, --string    | String to be displayed.                             |
+
+Example:
 ```bash
 $ pacman
 .....co World'
 ```
-* <strong>progress_bar</strong><br>
+
+### - progress_bar
 Progress bar that can be implemented in any other bash script.
+
+Example:
 ```bash
 $ progress_bar 
 |█████████...........|     / 46% [ Installing foo... ]
 ```
-* <strong>sortbody</strong><br>
-Only sort the body of input string, leaving the header fixed in place.<br>
-Note that in the example below, using `sort` will print the header on the last line.
+
+### - sortbody
+Only sort the body of input string, leaving the header fixed in place.
+
+Example:
 ```bash
 $ df -h | sortbody -k 5
 Filesystem      Size  Used Avail Use% Mounted on
@@ -88,26 +106,37 @@ tmpfs           1.6G  200K  1.6G   1% /run/user/1000
 /dev/sda2       187G   69G  109G  39% /home
 /dev/nvme0n1p7  667M  336M  332M  51% /boot/efi
 ```
-* <strong>template</strong><br>
+Note that in the example below, using `sort` will print the header on the last line.
+
+### - template
 A template to use for creating bash scripts.
-* <strong>urldecode</strong><br>
-Decodes given encoded URL.<br>
-Options:
-  * -f|--file<br>
-  Input file to read encoded URLs from.
+
+### - urldecode
+Decodes given encoded URL.
+
+| Options    | Usage                                 |
+| ---------- | ------------------------------------- |
+| -f, --file | Input file to read encoded URLs from. |
+
+Example:
 ```bash
 $ echo "https%3A%2F%2Fmedium.com%2F%40ftrain%2Fbig-data-small-effort-b62607a43a8c" | urldecode 
 https://medium.com/@ftrain/big-data-small-effort-b62607a43a8c
 ```
-* <strong>urlencode</strong><br>
-Encodes given URL.<br>
-Options:
-  * -f|--file<br>
-  Input file to read URLs from.
+
+### - urlencode
+Encodes given URL.
+
+| Options    | Usage                         |
+| ---------- | ----------------------------- |
+| -f, --file | Input file to read URLs from. |
+
+Example:
 ```bash
 $ echo "https://medium.com/@ftrain/big-data-small-effort-b62607a43a8c" | urlencode 
 https%3A%2F%2Fmedium.com%2F%40ftrain%2Fbig-data-small-effort-b62607a43a8c
 ```
-* <strong>wifi_connect</strong><br>
+
+### - wifi_connect
 Connect to the strongest known wifi signal, given regex for SSID.<br>
 Note: regex is written in the script. This needs to be modified, in order to make it usable.
