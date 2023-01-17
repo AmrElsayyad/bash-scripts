@@ -4,14 +4,14 @@
 # Description:   calculate factorial of a number
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-08
-# Version:       1.0.0
+# Version:       0.0.1
 
 # Exit codes
 # ==========
 # 0   no error
 # 1   script interrupted
 # 2   missing argument
-# 3   unknown argument
+# 3   invalid argument
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> handler functions >>>>>>>>>>>>>>>>>>>>>>>>
@@ -38,6 +38,13 @@ trap on_ctrl_c SIGINT
 
 # >>>>>>>>>>>>>>>>>>>>>>>> functions >>>>>>>>>>>>>>>>>>>>>>>>
 
+function show_help () {
+    echo "
+Usage: ${0} [-h] NUMBER
+Get the factorial of a number.
+" # help message
+}
+
 # Usage: factorial n
 factorial ()
 {
@@ -51,6 +58,46 @@ factorial ()
 # <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
 
 
+# >>>>>>>>>>>>>>>>>>>>>>>> argument parsing >>>>>>>>>>>>>>>>>>>>>>>>
+
+POSITIONAL=()
+while (( $# > 0 )); do
+    case "${1}" in
+        -f|--flag)
+        echo flag: "${1}"
+        shift # shift once since flags have no values
+        ;;
+        -h|--help)
+        show_help
+        exit 0
+        ;;
+        -s|--switch)
+        numOfArgs=1 # number of switch arguments
+        if (( $# < numOfArgs + 1 )); then
+            shift $#
+        else
+            echo "switch: ${1} with value: ${2}"
+            shift $((numOfArgs + 1)) # shift 'numOfArgs + 1' to bypass switch and its value
+        fi
+        ;;
+        *) # unknown flag/switch
+        if [[ "${1}" =~ ^- ]]; then
+            echo "ERROR: argument '${1}' is not understood." 1>&2
+            show_help
+            exit 3
+        else
+            POSITIONAL+=("${1}")
+            shift
+        fi
+        ;;
+    esac
+done
+
+set -- "${POSITIONAL[@]}" # restore positional params
+
+# <<<<<<<<<<<<<<<<<<<<<<<< argument parsing <<<<<<<<<<<<<<<<<<<<<<<<
+
+
 # >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
 
 if (($# == 1)); then
@@ -59,9 +106,11 @@ if (($# == 1)); then
     echo "${result[@]}"
 elif (($# == 0)); then
     echo "Please enter number to get its factorial!"
+    show_help
     exit 2
 else
-    echo "Error parsing arguments!"
+    echo "ERROR parsing arguments!"
+    show_help
     exit 3
 fi
 

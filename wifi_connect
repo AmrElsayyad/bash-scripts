@@ -4,14 +4,16 @@
 # Description:   connect to the strongest wifi signal
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-08
-# Version:       1.0.0
+# Version:       0.0.1
 
 # Exit codes
 # ==========
 # 0   no error
 # 1   script interrupted
-# 2   failed to retrieve SSID
-# 3   failed to connect
+# 2   missing argument
+# 3   invalid argument
+# 4   failed to retrieve SSID
+# 5   failed to connect
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> handler functions >>>>>>>>>>>>>>>>>>>>>>>>
@@ -36,29 +38,56 @@ trap on_ctrl_c SIGINT
 # <<<<<<<<<<<<<<<<<<<<<<<< event handlers <<<<<<<<<<<<<<<<<<<<<<<<
 
 
+# >>>>>>>>>>>>>>>>>>>>>>>> functions >>>>>>>>>>>>>>>>>>>>>>>>
+
+function show_help () {
+    echo "Usage: wifi_connect SSID_REGEX
+Connect to the strongest wifi signal matching given pattern for SSID."
+}
+
+# <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>> argument parsing >>>>>>>>>>>>>>>>>>>>>>>>
+
+if (( $# < 1 )); then
+    echo "ERROR: missing argument 'SSID_REGEX'." 1>&2
+    show_help
+    exit 2
+fi
+
+if (( $# > 1 )); then
+    echo "ERROR: Too many arguments." 1>&2
+    show_help
+    exit 3
+fi
+
+# <<<<<<<<<<<<<<<<<<<<<<<< argument parsing <<<<<<<<<<<<<<<<<<<<<<<<
+
+
 # >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
 
 # Turn on wifi
 nmcli radio wifi on 2>/dev/null
 
 # Get network SSID
-ssid=$(nmcli -f ssid dev wifi | grep 'Amol' | head -1 | xargs 2>/dev/null) # Put your regex between the quotes
+ssid=$(nmcli -f ssid dev wifi | grep -E ${1} | head -1 | xargs 2>/dev/null) # Put your regex between the quotes
 
 # Check for failure
-if [[ $? != 0 ]]; then
-    echo "Failed to retrieve network SSID."
-    exit 2
+if (( $? != 0 )); then
+    echo "ERROR: failed to retrieve network SSID." 1>&2
+    exit 4
 fi
 
 # Connect to network
-connected=$(nmcli c up $ssid 2>/dev/null)
+connected=$(nmcli c up ${ssid} 2>/dev/null)
 
 # Check for failure
-if [[ $? != 0 ]]; then
-    echo "Failed to connect to $ssid."
-    exit 3
+if (( $? != 0 )); then
+    echo "ERROR: failed to connect to ${ssid}." 1>&2
+    exit 5
 fi
 
-echo "Connected to $ssid."
+echo "Connected to ${ssid}."
 
 # <<<<<<<<<<<<<<<<<<<<<<<< rest of code <<<<<<<<<<<<<<<<<<<<<<<<

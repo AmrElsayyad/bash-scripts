@@ -4,12 +4,14 @@
 # Description:   print hello world with color selected from options menu
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-10
-# Version:       1.0.2
+# Version:       0.0.1
 
 # Exit codes
 # ==========
 # 0   no error
 # 1   script interrupted
+# 2   missing argument
+# 3   invalid argument
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> handler functions >>>>>>>>>>>>>>>>>>>>>>>>
@@ -32,6 +34,18 @@ function on_ctrl_c() {
 trap on_ctrl_c SIGINT
 
 # <<<<<<<<<<<<<<<<<<<<<<<< event handlers <<<<<<<<<<<<<<<<<<<<<<<<
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>> functions >>>>>>>>>>>>>>>>>>>>>>>>
+
+function show_help () {
+    echo "
+Usage: ${0} [-h]
+Print Hello World with color selected from options menu.
+" # help message
+}
+
+# <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> functions >>>>>>>>>>>>>>>>>>>>>>>>
@@ -89,6 +103,25 @@ function inputChoice() {
 }
 
 # <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>> argument parsing >>>>>>>>>>>>>>>>>>>>>>>>
+
+while (( $# > 0 )); do
+    case "${1}" in
+        -h|--help)
+        show_help
+        exit 0
+        ;;
+        *) # unknown flag/switch
+        echo "ERROR: argument '${1}' is not understood." 1>&2
+        show_help
+        exit 3
+        ;;
+    esac
+done
+
+# <<<<<<<<<<<<<<<<<<<<<<<< argument parsing <<<<<<<<<<<<<<<<<<<<<<<<
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>

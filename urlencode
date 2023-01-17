@@ -4,7 +4,7 @@
 # Description:   encodes given url
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-08
-# Version:       1.0.1
+# Version:       0.0.1
 
 # Exit codes
 # ==========
@@ -17,19 +17,22 @@
 
 # >>>>>>>>>>>>>>>>>>>>>>>> handler functions >>>>>>>>>>>>>>>>>>>>>>>>
 
+function show_help () {
+    echo "
+Usage: ${0} [-f FILE]
+encodes given URL from input stream, or given file.
+
+OPTIONS:
+    -f, --file	Input file to read encoded URLs from.
+" # help message
+}
+
 # CTRL+C event handler
 function on_ctrl_c() {
     echo # Set cursor to the next line of '^C'
     tput cnorm # show cursor. You need this if animation is used.
     # i.e. clean-up code here
     exit 1 # Don't remove. Use a number (1-255) for error code.
-}
-
-# Exit event handler
-function on_exit() {
-    tput cnorm # Show cursor. You need this if animation is used.
-    # i.e. clean-up code here
-    exit 0 # Exit gracefully.
 }
 
 # <<<<<<<<<<<<<<<<<<<<<<<< handler functions <<<<<<<<<<<<<<<<<<<<<<<<
@@ -39,9 +42,6 @@ function on_exit() {
 
 # Register CTRL+C event handler
 trap on_ctrl_c SIGINT
-
-# Register exit event handler.
-trap on_exit EXIT
 
 # <<<<<<<<<<<<<<<<<<<<<<<< event handlers <<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -71,20 +71,26 @@ while (( $# > 0 )); do
         -f|--file)
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
-            echo "Error: missing filepath." 1>&2
+            echo "ERROR: missing filepath." 1>&2
+            show_help
             exit 2
         else
             if [ -f "${2}" ]; then
                 urls=$(cat ${2})
             else
-                echo "Error: file does not exist."
+                echo "ERROR: file does not exist."
+                show_help
                 exit 4
             fi
             shift $((numOfArgs + 1)) # shift 'numOfArgs + 1' to bypass switch and its value
         fi
         ;;
+        -h|--help)
+        show_help
+        exit 0
+        ;;
         *) # unknown flag/switch
-        echo "Error: invalid argument." 1>&2
+        echo "ERROR: invalid argument." 1>&2
         exit 3
     esac
 done

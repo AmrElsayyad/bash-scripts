@@ -4,13 +4,15 @@
 # Description:   description
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          yyyy-mm-dd
-# Version:       1.0.0
+# Version:       0.0.1
 
 # Exit codes
 # ==========
 # 0   no error
 # 1   script interrupted
-# 2   error description
+# 2   missing argument
+# 3   invalid argument
+# 4   error description
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>> variables >>>>>>>>>>>>>>>>>>>>>>>>
@@ -51,8 +53,15 @@ trap on_exit EXIT
 
 # >>>>>>>>>>>>>>>>>>>>>>>> functions >>>>>>>>>>>>>>>>>>>>>>>>
 
+# template function
 function name () {
     echo "$1" # arguments are accessible through $1, $2,...
+}
+
+function show_help () {
+    echo "
+Usage: ${0} [OPTION]...
+" # help message
 }
 
 # <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
@@ -67,6 +76,10 @@ while (( $# > 0 )); do
         echo flag: "${1}"
         shift # shift once since flags have no values
         ;;
+        -h|--help)
+        show_help
+        exit 0
+        ;;
         -s|--switch)
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
@@ -77,8 +90,14 @@ while (( $# > 0 )); do
         fi
         ;;
         *) # unknown flag/switch
-        POSITIONAL+=("${1}")
-        shift
+        if [[ "${1}" =~ ^- ]]; then
+            echo "ERROR: argument '${1}' is not understood." 1>&2
+            show_help
+            exit 3
+        else
+            POSITIONAL+=("${1}")
+            shift
+        fi
         ;;
     esac
 done

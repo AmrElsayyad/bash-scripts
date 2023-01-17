@@ -4,7 +4,7 @@
 # Description:   a dummy progress bar
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-08
-# Version:       1.0.0
+# Version:       0.0.1
 
 # Exit codes
 # ==========
@@ -47,8 +47,15 @@ trap on_exit EXIT
 
 # >>>>>>>>>>>>>>>>>>>>>>>> functions >>>>>>>>>>>>>>>>>>>>>>>>
 
+function show_help () {
+    echo "
+Usage: ${0} [-h]
+Progress bar that can be implemented in any other bash script.
+" # help message
+}
+
 # Usage: progressBar "message" currentStep totalSteps
-function progressBar() {
+function progress_bar() {
     local bar='████████████████████'
     local space='....................'
     local wheel=('\' '|' '/' '-')
@@ -67,6 +74,25 @@ function progressBar() {
 # <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
 
 
+# >>>>>>>>>>>>>>>>>>>>>>>> argument parsing >>>>>>>>>>>>>>>>>>>>>>>>
+
+while (( $# > 0 )); do
+    case "${1}" in
+        -h|--help)
+        show_help
+        exit 0
+        ;;
+        *) # unknown flag/switch
+        echo "ERROR: argument '${1}' is not understood." 1>&2
+        show_help
+        exit 3
+        ;;
+    esac
+done
+
+# <<<<<<<<<<<<<<<<<<<<<<<< argument parsing <<<<<<<<<<<<<<<<<<<<<<<<
+
+
 # >>>>>>>>>>>>>>>>>>>>>>>> rest of code >>>>>>>>>>>>>>>>>>>>>>>>
 
 # Usage: progressBar "message" currentStep totalSteps
@@ -74,7 +100,7 @@ totalSteps=100
 
 for ((currentStep=1; currentStep <= totalSteps; currentStep++)); do
     sleep 0.1 # simulating one step of job
-    progressBar "Installing foo..." "${currentStep}" "${totalSteps}"
+    progress_bar "Installing foo..." "${currentStep}" "${totalSteps}"
 done
 
 echo

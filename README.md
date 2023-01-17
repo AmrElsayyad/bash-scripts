@@ -1,18 +1,12 @@
 # Bash Scripts
 
-A repository for simple bash scripts to do simple tasks.
+A list of template bash scripts with various features, that can be used in large projects.
 
 
 ## File Description
 
 ### - banner
 Displays a banner with given message, color and decorator.
-
-| Options         | Usage                     |
-| --------------- | ------------------------- |
-| -c, --color     | Text color.               |
-| -d, --decorator | Decorator around message. |
-| -m, --message   | Message to be displayed.  |
 
 Example:
 ```bash
@@ -33,11 +27,6 @@ $ factorial 3
 
 ### - greet
 Displays a greeting message for a user.
-
-| Options         | Usage                               |
-| --------------- | ----------------------------------- |
-| -m, --morning   | Toggle morning instead of evening.  |
-| -n, --name      | User name.                          |
 
 Example:
 ```bash
@@ -69,12 +58,6 @@ Hello World!
 
 ### - pacman
 Display given string, then pacman eats it letter by letter with given delay.
-
-| Options         | Usage                                               |
-| --------------- | --------------------------------------------------- |
-| -i, --interval  | Interval for pacman to wait between eating letters. |
-| -p, --padding   | Leftover padding after letter was eaten.            |
-| -s, --string    | String to be displayed.                             |
 
 Example:
 ```bash
@@ -114,10 +97,6 @@ A template to use for creating bash scripts.
 ### - urldecode
 Decodes given encoded URL.
 
-| Options    | Usage                                 |
-| ---------- | ------------------------------------- |
-| -f, --file | Input file to read encoded URLs from. |
-
 Example:
 ```bash
 $ echo "https%3A%2F%2Fmedium.com%2F%40ftrain%2Fbig-data-small-effort-b62607a43a8c" | urldecode 
@@ -126,10 +105,6 @@ https://medium.com/@ftrain/big-data-small-effort-b62607a43a8c
 
 ### - urlencode
 Encodes given URL.
-
-| Options    | Usage                         |
-| ---------- | ----------------------------- |
-| -f, --file | Input file to read URLs from. |
 
 Example:
 ```bash

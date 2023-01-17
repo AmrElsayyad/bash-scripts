@@ -4,7 +4,7 @@
 # Description:   a shell script to greet someone
 # Author:        Amr Elsayyad <amrelsayyad96@outlook.com>
 # Date:          2022-09-10
-# Version:       1.0.1
+# Version:       0.0.1
 
 # Exit codes
 # ==========
@@ -36,6 +36,23 @@ trap on_ctrl_c SIGINT
 # <<<<<<<<<<<<<<<<<<<<<<<< event handlers <<<<<<<<<<<<<<<<<<<<<<<<
 
 
+# >>>>>>>>>>>>>>>>>>>>>>>> functions >>>>>>>>>>>>>>>>>>>>>>>>
+
+function show_help () {
+    echo "
+Usage: ${0} [OPTION]...
+Displays a greeting message for a user.
+
+OPTIONS:
+    -h, --help      Show this help message.
+    -m, --morning   Toggle morning instead of evening.
+    -n, --name      User name. Default: current user
+" # help message
+}
+
+# <<<<<<<<<<<<<<<<<<<<<<<< functions <<<<<<<<<<<<<<<<<<<<<<<<
+
+
 # >>>>>>>>>>>>>>>>>>>>>>>> argument parsing >>>>>>>>>>>>>>>>>>>>>>>>
 
 # default value for time of day
@@ -45,10 +62,15 @@ time='evening'
 POSITIONAL=()
 while (( $# > 0 )); do
     case "${1}" in
+        -h|--help)
+        show_help
+        exit 0
+        ;;
         -m|--morning)
         # check if argument is after a positional argument
         if (( ${#POSITIONAL[@]} > 0 )); then
-            echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+            echo "ERROR: argument '${POSITIONAL[@]}' not understood." 1>&2
+            show_help
             exit 3
         fi
         # get switch arguments
@@ -58,13 +80,15 @@ while (( $# > 0 )); do
         -n|--name)
         # check if argument is after a positional argument
         if (( ${#POSITIONAL[@]} > 0 )); then
-            echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+            echo "ERROR: argument '${POSITIONAL[@]}' not understood." 1>&2
+            show_help
             exit 3
         fi
         # get switch arguments
         numOfArgs=1 # number of switch arguments
         if (( $# < numOfArgs + 1 )); then
-            echo "missing argument for '${1}' option" >&2
+            echo "ERROR: missing argument for '${1}' option" >&2
+            show_help
             exit 2
         else
             name=${2}
@@ -73,7 +97,8 @@ while (( $# > 0 )); do
         ;;
         *) # unknown flag/switch
         if [[ "${1}" =~ ^- ]]; then
-            echo "argument ${1} not understood."
+            echo "ERROR: argument '${1}' is not understood."
+            show_help
             exit 3
         else
             POSITIONAL+=("${1}")
@@ -95,10 +120,12 @@ if (( ${#POSITIONAL[@]} > 0 )); then
     if [ "${name}" ]; then
         # if there are both a positional arg and a name arg
         echo "argument '${POSITIONAL[@]}' not understood." 1>&2
+        show_help
         exit 3
     elif (( ${#POSITIONAL[@]} > 1 )); then
         # if more than 1 positional arg
         echo "argument '${POSITIONAL[@]:1}' not understood." 1>&2
+        show_help
         exit 3
     else
         # if the positional arg is the name
