@@ -1,6 +1,6 @@
 # Bash Scripts
 
-A list of template bash scripts with various features, that can be used in large projects.
+A list of template bash scripts that can be used in large projects.
 
 
 ## File Description
