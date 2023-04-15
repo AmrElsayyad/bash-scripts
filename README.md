@@ -114,4 +114,3 @@ https%3A%2F%2Fmedium.com%2F%40ftrain%2Fbig-data-small-effort-b62607a43a8c
 
 ### - wifi_connect
 Connect to the strongest known wifi signal, given regex for SSID.<br>
-Note: regex is written in the script. This needs to be modified, in order to make it usable.
